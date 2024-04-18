@@ -16,7 +16,6 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 
 import { Equation, EquationOverlay } from './Equation'
 
@@ -34,16 +33,26 @@ declare global {
 }
 
 function App() {
-  const temp = localStorage.getItem('eqs')
+  const storeData = localStorage.getItem('eqs')
 
   const [eqs, setEqs] = useState(
-    JSON.parse(temp === null ? '[]' : temp) as EquationData[]
+    JSON.parse(storeData === null ? '[]' : storeData) as EquationData[]
   )
+
+  // const [caretX, setCaretX] = useState(0)
+  // const [hasMoveout, setHasMoveout] = useState(false)
 
   const elRefs = useRef([] as Array<MathfieldElement | null>)
 
   function keyHandler(ev: React.KeyboardEvent, idx: number) {
     const target = ev.target as MathfieldElement
+    // add arrow, input, selection and paste support
+    // if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+    //   const X = target.caretPoint?.x
+    //   if (X !== undefined) {
+    //     setCaretX(X)
+    //   }
+    // }
     // if (idx !== undefined) {
     //   if (ev.key === 'Enter') {
     //     const x = [...eqs]
@@ -62,7 +71,6 @@ function App() {
 
   function setSaveEqs(value: EquationData[]) {
     setEqs(value)
-    // console.log(value)
     localStorage.setItem('eqs', JSON.stringify(value))
   }
 
@@ -111,26 +119,24 @@ function App() {
     el: MathfieldElement,
     idx: number
   ) => {
-    // console.log(ev)
+    const caretX = el.caretPoint?.x
     if (ev.detail.direction === 'upward') {
       if (idx > 0) {
-        let preCaretPoint = el.caretPoint?.x
-        // console.log(el.offsetTop + el.offsetHeight / 2)
-        // console.log(preCaretPoint)
         el.blur()
-        // console.log()
-        // console.log(elRefs.current[idx - 1])
         elRefs.current[idx - 1]?.focus()
         // elRefs.current[idx - 1]?.executeCommand('moveToMathfieldEnd')
-        // console.log(elRefs.current[idx - 1]?.getCaretPoint())
-        const caretPoint = elRefs.current[idx - 1]?.caretPoint?.y
-        elRefs.current[idx - 1]?.setCaretPoint(preCaretPoint, caretPoint)
+        const caretY = elRefs.current[idx - 1]?.caretPoint?.y
+        if (caretY !== undefined && caretX !== undefined)
+          elRefs.current[idx - 1]?.setCaretPoint(caretX, caretY)
       }
     } else if (ev.detail.direction === 'downward') {
       if (idx < eqs.length - 1) {
         el.blur()
         elRefs.current[idx + 1]?.focus()
-        elRefs.current[idx + 1]?.executeCommand('moveToMathfieldStart')
+        // elRefs.current[idx + 1]?.executeCommand('moveToMathfieldStart')
+        const caretY = elRefs.current[idx + 1]?.caretPoint?.y
+        if (caretY !== undefined && caretX !== undefined)
+          elRefs.current[idx + 1]?.setCaretPoint(caretX, caretY)
       }
     }
   }
@@ -164,11 +170,7 @@ function App() {
         setDraggingIdx(idx)
       }
     }
-
-    // console.log(ev)
   }
-
-  // const sensers = useSensors(useSensor(PointerSensor), useSensor(MouseSensor))
 
   return (
     <div className="eq-section">

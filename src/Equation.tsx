@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, FormEvent, useState, useRef } from 'react'
+import React from 'react'
 import './Equation.css'
 
 import 'material-icons/iconfont/material-icons.css'
