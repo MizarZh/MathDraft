@@ -1,9 +1,29 @@
-import React, { KeyboardEvent, FormEvent, useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import './App.css'
-import 'mathlive'
-import { MathfieldElement } from 'mathlive'
-import 'mathlive/fonts.css'
+
 import { randomStringGenerator } from './utils'
+import { EquationData } from './types'
+
+import {
+  DndContext,
+  closestCenter,
+  closestCorners,
+  PointerSensor,
+  MouseSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
+import Equation from './Equation'
+
+import type { MathfieldElement, MoveOutEvent } from 'mathlive'
 
 declare global {
   namespace JSX {
@@ -16,26 +36,16 @@ declare global {
   }
 }
 
-interface Equation {
-  name: string
-  eq: string
-}
-
 function App() {
-  // const [eqs, setEqs] = useState([
-  //   { eq: '\\alpha = \\beta' },
-  //   { eq: '\\delta = \\gamma' },
-  // ] as Equation[])
-
   const temp = localStorage.getItem('eqs')
 
   const [eqs, setEqs] = useState(
-    JSON.parse(temp === null ? '[]' : temp) as Equation[]
+    JSON.parse(temp === null ? '[]' : temp) as EquationData[]
   )
 
   const elRefs = useRef([] as Array<MathfieldElement | null>)
 
-  function keyHandler(ev: KeyboardEvent, idx: number) {
+  function keyHandler(ev: React.KeyboardEvent, idx: number) {
     const target = ev.target as MathfieldElement
     // if (idx !== undefined) {
     //   if (ev.key === 'Enter') {
@@ -50,17 +60,18 @@ function App() {
     //     }
     //   }
     // }
+    // console.log(target.caretPoint)
   }
 
-  function setSaveEqs(value: Equation[]) {
+  function setSaveEqs(value: EquationData[]) {
     setEqs(value)
-    console.log(value)
+    // console.log(value)
     localStorage.setItem('eqs', JSON.stringify(value))
   }
 
   const updateInputValue = (idx: number, val: string) => {
     setSaveEqs(
-      eqs.map((preVal: Equation, i: number) => {
+      eqs.map((preVal: EquationData, i: number) => {
         if (i === idx) {
           return { ...preVal, eq: val }
         } else {
@@ -74,98 +85,115 @@ function App() {
     setSaveEqs(eqs.filter((_, i: number) => i !== idx))
   }
 
+  const swap = (idx1: number, idx2: number) => {
+    const x = [...eqs]
+    const temp = x[idx1]
+    x[idx1] = x[idx2]
+    x[idx2] = temp
+    setSaveEqs(x)
+  }
+
   const moveUp = (idx: number) => {
     if (idx > 0) {
-      const x = [...eqs]
-      const temp = x[idx]
-      x[idx] = x[idx - 1]
-      x[idx - 1] = temp
-      setSaveEqs(x)
+      swap(idx, idx - 1)
     }
   }
 
   const moveDown = (idx: number) => {
     if (idx < eqs.length - 1) {
-      const x = [...eqs]
-      const temp = x[idx]
-      x[idx] = x[idx + 1]
-      x[idx + 1] = temp
-      setSaveEqs(x)
+      swap(idx, idx + 1)
     }
   }
 
-  function addElement() {
-    setSaveEqs([...eqs, { name: randomStringGenerator(), eq: '' }])
+  const addElement = () => {
+    setSaveEqs([...eqs, { id: randomStringGenerator(), eq: '' }])
   }
 
-  const eqList = eqs.map((eq: Equation, idx: number) => (
-    <div className="equation" key={`equation-${idx}`}>
-      <div className="controller" key={`controller-${idx}`}>
-        <div className="control" key={`drag-${idx}`}>
-          ≡
-        </div>
-        <div
-          className="control"
-          key={`up-${idx}`}
-          onMouseUp={() => moveUp(idx)}
-        >
-          ↑
-        </div>
-        <div
-          className="control"
-          key={`down-${idx}`}
-          onMouseUp={() => moveDown(idx)}
-        >
-          ↓
-        </div>
-        <div
-          className="control"
-          key={`X-${idx}`}
-          onMouseUp={() => deleteEq(idx)}
-        >
-          X
-        </div>
-      </div>
-      <math-field
-        onKeyDownCapture={(ev) => keyHandler(ev, idx)}
-        onBeforeInput={(ev) =>
-          updateInputValue(idx, (ev.target as MathfieldElement).value)
-        }
-        ref={(el) => {
-          elRefs.current[idx] = el
-          el?.addEventListener('move-out', (ev) => {
-            // console.log(ev)
-            if (ev.detail.direction === 'upward') {
-              if (idx > 0) {
-                el.blur()
-                // console.log(el)
-                // console.log(elRefs.current[idx - 1])
-                elRefs.current[idx - 1]?.focus()
-                elRefs.current[idx - 1]?.executeCommand('moveToMathfieldEnd')
-              }
-            } else if (ev.detail.direction === 'downward') {
-              if (idx < eqs.length - 1) {
-                el.blur()
-                elRefs.current[idx + 1]?.focus()
-                elRefs.current[idx + 1]?.executeCommand('moveToMathfieldStart')
-              }
-            }
-          })
-        }}
-        key={`math-field-${idx}`}
-      >
-        {eq.eq}
-      </math-field>
-    </div>
-  ))
+  const moveOutHandler = (
+    ev: CustomEvent<MoveOutEvent>,
+    el: MathfieldElement,
+    idx: number
+  ) => {
+    // console.log(ev)
+    if (ev.detail.direction === 'upward') {
+      if (idx > 0) {
+        let preCaretPoint = el.caretPoint?.x
+        console.log(el.offsetTop + el.offsetHeight / 2)
+        console.log(preCaretPoint)
+        el.blur()
+        // console.log()
+        // console.log(elRefs.current[idx - 1])
+        elRefs.current[idx - 1]?.focus()
+        // elRefs.current[idx - 1]?.executeCommand('moveToMathfieldEnd')
+        // console.log(elRefs.current[idx - 1]?.getCaretPoint())
+        const caretPoint = elRefs.current[idx - 1]?.caretPoint?.y
+        elRefs.current[idx - 1]?.setCaretPoint(preCaretPoint, caretPoint)
+      }
+    } else if (ev.detail.direction === 'downward') {
+      if (idx < eqs.length - 1) {
+        el.blur()
+        elRefs.current[idx + 1]?.focus()
+        elRefs.current[idx + 1]?.executeCommand('moveToMathfieldStart')
+      }
+    }
+  }
 
-  eqList.push(
-    <div className="add-eq" key="add" onClick={addElement}>
-      +
+  function dragEndHandler(ev: DragEndEvent) {
+    const { active, over } = ev
+    if (over !== null)
+      if (active.id !== over.id) {
+        let oldIndex = 0,
+          newIndex = 0
+        for (const [idx, eq] of eqs.entries()) {
+          if (eq.id === active.id) {
+            oldIndex = idx
+          }
+          if (eq.id === over.id) {
+            newIndex = idx
+          }
+        }
+        if (oldIndex !== newIndex) swap(oldIndex, newIndex)
+      }
+  }
+
+  function dragStartHandler(ev) {
+    // console.log(ev)
+  }
+
+  // const sensers = useSensors(useSensor(PointerSensor), useSensor(MouseSensor))
+
+  return (
+    <div className="eq-section">
+      <DndContext
+        // sensors={sensers}
+        collisionDetection={closestCorners}
+        onDragEnd={dragEndHandler}
+        onDragStart={dragStartHandler}
+      >
+        <SortableContext items={eqs} strategy={verticalListSortingStrategy}>
+          {eqs.map((val, idx) => (
+            <Equation
+              key={val.id}
+              idx={idx}
+              eqData={val}
+              elRefs={elRefs}
+              func={{
+                updateInputValue,
+                deleteEq,
+                moveUp,
+                moveDown,
+                keyHandler,
+                moveOutHandler,
+              }}
+            ></Equation>
+          ))}
+        </SortableContext>
+      </DndContext>
+      <div className="add-eq" onMouseUp={addElement}>
+        +
+      </div>
     </div>
   )
-
-  return <div className="eq-section">{eqList}</div>
 }
 
 export default App

@@ -1,0 +1,26 @@
+math-field {
+  /* margin: 5px 0; */
+  font-size: 24px;
+  padding: 8px;
+  width: 100%;
+}
+
+.equation {
+  display: flex;
+  flex-direction: row;
+}
+
+.controller {
+  display: flex;
+  align-items: center;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  user-select: none;
+}
