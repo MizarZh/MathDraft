@@ -6,13 +6,10 @@ import { EquationData } from './types'
 
 import {
   DndContext,
-  closestCenter,
   closestCorners,
-  PointerSensor,
-  MouseSensor,
-  useSensor,
-  useSensors,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
 } from '@dnd-kit/core'
 import {
   SortableContext,
@@ -21,7 +18,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-import Equation from './Equation'
+import { Equation, EquationOverlay } from './Equation'
 
 import type { MathfieldElement, MoveOutEvent } from 'mathlive'
 
@@ -118,8 +115,8 @@ function App() {
     if (ev.detail.direction === 'upward') {
       if (idx > 0) {
         let preCaretPoint = el.caretPoint?.x
-        console.log(el.offsetTop + el.offsetHeight / 2)
-        console.log(preCaretPoint)
+        // console.log(el.offsetTop + el.offsetHeight / 2)
+        // console.log(preCaretPoint)
         el.blur()
         // console.log()
         // console.log(elRefs.current[idx - 1])
@@ -138,6 +135,8 @@ function App() {
     }
   }
 
+  const [draggingIdx, setDraggingIdx] = useState<number | null>(null)
+
   function dragEndHandler(ev: DragEndEvent) {
     const { active, over } = ev
     if (over !== null)
@@ -152,11 +151,20 @@ function App() {
             newIndex = idx
           }
         }
-        if (oldIndex !== newIndex) swap(oldIndex, newIndex)
+        if (oldIndex !== newIndex) {
+          setSaveEqs(arrayMove(eqs, oldIndex, newIndex))
+        }
       }
   }
 
-  function dragStartHandler(ev) {
+  function dragStartHandler(ev: DragStartEvent) {
+    const { active } = ev
+    for (const [idx, eq] of eqs.entries()) {
+      if (active.id === eq.id) {
+        setDraggingIdx(idx)
+      }
+    }
+
     // console.log(ev)
   }
 
@@ -188,6 +196,9 @@ function App() {
             ></Equation>
           ))}
         </SortableContext>
+        <DragOverlay>
+          {draggingIdx ? <EquationOverlay eqData={eqs[draggingIdx]} /> : null}
+        </DragOverlay>
       </DndContext>
       <div className="add-eq" onMouseUp={addElement}>
         +

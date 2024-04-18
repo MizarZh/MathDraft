@@ -41,24 +41,28 @@ function Equation({ idx, eqData, elRefs, func }: Props) {
     moveOutHandler,
   } = func
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: eqData.id })
+  const {
+    isDragging,
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: eqData.id })
 
   const dragStyle = {
+    opacity: isDragging ? 0.2 : 1,
     transform: CSS.Transform.toString(transform),
     transition,
   }
 
   return (
     <div className="equation" ref={setNodeRef} style={dragStyle}>
-      <div className="controller" key={`controller-${idx}`}>
+      <div className="controller">
         <span
           className="control material-symbols-outlined"
           {...attributes}
           {...listeners}
-          //   onClick={(ev) => {
-          //     console.log(listeners)
-          //   }}
         >
           menu
         </span>
@@ -85,13 +89,11 @@ function Equation({ idx, eqData, elRefs, func }: Props) {
         onKeyDownCapture={(ev) => keyHandler(ev, idx)}
         onInput={(ev) => {
           updateInputValue(idx, (ev.target as MathfieldElement).value)
-          console.log(attributes, listeners)
         }}
         ref={(el) => {
           elRefs.current[idx] = el
           el?.addEventListener('move-out', (ev) => moveOutHandler(ev, el, idx))
         }}
-        key={`math-field-${idx}`}
       >
         {eqData.eq}
       </math-field>
@@ -99,4 +101,20 @@ function Equation({ idx, eqData, elRefs, func }: Props) {
   )
 }
 
-export default Equation
+function EquationOverlay({ eqData }: { eqData: EquationData }) {
+  return (
+    <div className="equation">
+      <div className="controller">
+        <span className="control material-symbols-outlined">menu</span>
+        <span className="control material-symbols-outlined">arrow_upward</span>
+        <span className="control material-symbols-outlined">
+          arrow_downward
+        </span>
+        <span className="control material-symbols-outlined">delete</span>
+      </div>
+      <math-field>{eqData.eq}</math-field>
+    </div>
+  )
+}
+
+export { Equation, EquationOverlay }
