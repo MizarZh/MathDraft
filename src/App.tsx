@@ -45,7 +45,7 @@ function App() {
   const elRefs = useRef([] as Array<MathfieldElement | null>)
 
   function keyHandler(ev: React.KeyboardEvent, idx: number) {
-    const target = ev.target as MathfieldElement
+    // const target = ev.target as MathfieldElement
     // add arrow, input, selection and paste support
     // if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
     //   const X = target.caretPoint?.x
@@ -124,7 +124,7 @@ function App() {
       if (idx > 0) {
         el.blur()
         elRefs.current[idx - 1]?.focus()
-        // elRefs.current[idx - 1]?.executeCommand('moveToMathfieldEnd')
+        // elRefs.current[idx - 1]?.executeCommand('moveToMathfieldStart')
         const caretY = elRefs.current[idx - 1]?.caretPoint?.y
         if (caretY !== undefined && caretX !== undefined)
           elRefs.current[idx - 1]?.setCaretPoint(caretX, caretY)

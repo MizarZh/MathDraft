@@ -21,7 +21,7 @@ dependencies:
     specifier: ^0.17.2
     version: 0.17.2
   mathlive:
-    specifier: ^0.98.6
+    specifier: 0.98.6
     version: 0.98.6
   react:
     specifier: ^18.2.0

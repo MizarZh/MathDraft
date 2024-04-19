@@ -90,9 +90,12 @@ function Equation({ idx, eqData, elRefs, func }: Props) {
         onInput={(ev) => {
           updateInputValue(idx, (ev.target as MathfieldElement).value)
         }}
+        // onContextMenuCapture={(ev) => console.log(ev.target)}
         ref={(el) => {
-          elRefs.current[idx] = el
-          el?.addEventListener('move-out', (ev) => moveOutHandler(ev, el, idx))
+          if (el !== null) {
+            elRefs.current[idx] = el
+            el.addEventListener('move-out', (ev) => moveOutHandler(ev, el, idx))
+          }
         }}
       >
         {eqData.eq}
