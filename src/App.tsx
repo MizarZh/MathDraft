@@ -1,12 +1,12 @@
-import React, { useState, useRef, createContext } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import React, { useState, createContext } from 'react'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 
-import { randomStringGenerator } from './utils'
 import { notebookListItemName } from './config'
 
 import Main from './components/Main'
 import NotebookBoard from './components/NotebookBoard/NotebookBoard'
 import Welcome from './components/Welcome'
+import ErrorPage from './components/ErrorPage'
 
 import './App.css'
 
@@ -14,7 +14,8 @@ interface NotebookListContextType {
   notebookList: string[]
   setSaveNotbookList: (value: string[]) => void
   setNotebookList: React.Dispatch<React.SetStateAction<string[]>>
-  saveHandler: (newVal: string, idx: number) => void
+  notebookListSaveHandler: (newVal: string, idx: number) => void
+  notebookListDeleteHander: (idx: number) => void
 }
 
 export const NotebookListContext = createContext({} as NotebookListContextType)
@@ -25,25 +26,42 @@ export function App() {
     JSON.parse(notebookListData === null ? '[]' : notebookListData) as string[]
   )
   const navigate = useNavigate()
+  const location = useLocation()
 
   const setSaveNotbookList = (value: string[]) => {
     setNotebookList(value)
     localStorage.setItem(notebookListItemName, JSON.stringify(value))
   }
 
-  const saveHandler = (newVal: string, idx: number) => {
-    const newList = [...notebookList]
-    newList[idx] = newVal
+  const notebookListSaveHandler = (newVal: string, idx: number) => {
+    const oldVal = notebookList[idx]
+    // same name or not exists in the list
+    if (newVal === oldVal || notebookList.indexOf(newVal) === -1) {
+      const newList = [...notebookList]
+      newList[idx] = newVal
 
-    const equationData = localStorage.getItem(notebookList[idx])
-    localStorage.removeItem(notebookList[idx])
-    if (equationData !== null) {
-      localStorage.setItem(newVal, equationData)
+      const equationData = localStorage.getItem(oldVal)
+      localStorage.removeItem(oldVal)
+      if (equationData !== null) {
+        localStorage.setItem(newVal, equationData)
+      } else {
+        localStorage.setItem(newVal, '[]')
+      }
+      setSaveNotbookList(newList)
+      const match = location.pathname.match(/\/notebook\/([^/]+)\/?/)
+      if (match !== null && match[1] === oldVal) navigate(`/notebook/${newVal}`)
     } else {
-      localStorage.setItem(newVal, '[]')
+      alert('Name already exists!')
     }
+  }
+
+  const notebookListDeleteHander = (idx: number) => {
+    const newList = notebookList.filter((_, i) => i !== idx)
+    const oldVal = notebookList[idx]
+    localStorage.removeItem(oldVal)
     setSaveNotbookList(newList)
-    navigate(`/notebook/${newVal}`)
+    const match = location.pathname.match(/\/notebook\/([^/]+)\/?/)
+    if (match !== null && match[1] === oldVal) navigate('/')
   }
 
   return (
@@ -54,7 +72,8 @@ export function App() {
             notebookList,
             setNotebookList,
             setSaveNotbookList,
-            saveHandler,
+            notebookListSaveHandler,
+            notebookListDeleteHander,
           } as NotebookListContextType
         }
       >
@@ -69,6 +88,7 @@ export function App() {
               path="/notebook/:notebookName"
               element={<Main></Main>}
             ></Route>
+            <Route path="404" element={<ErrorPage></ErrorPage>}></Route>
           </Routes>
         </div>
       </NotebookListContext.Provider>

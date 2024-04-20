@@ -1,5 +1,4 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
-import { notebookListItemName } from '../../config'
 import { randomStringGenerator } from '../../utils'
 
 import EditableField from '../EditableField/EditableField'
@@ -8,12 +7,12 @@ import { NotebookListContext } from '../../App'
 import './NotebookBoard.css'
 
 function NotebookBoard() {
-  const { notebookList, setSaveNotbookList, saveHandler } =
-    useContext(NotebookListContext)
-
-  // useEffect(() => {
-  //   setSaveNotbookList(notebookList)
-  // }, [notebookList, setSaveNotbookList])
+  const {
+    notebookList,
+    setSaveNotbookList,
+    notebookListSaveHandler,
+    notebookListDeleteHander,
+  } = useContext(NotebookListContext)
 
   const addHandler = () => {
     setSaveNotbookList([
@@ -30,9 +29,11 @@ function NotebookBoard() {
             key={idx}
             value={val}
             idx={idx}
-            onSave={saveHandler}
+            onSave={notebookListSaveHandler}
+            onDelete={notebookListDeleteHander}
             elemType={'link'}
             to={`/notebook/${val}/`}
+            moveable={true}
           ></EditableField>
         )
       })}

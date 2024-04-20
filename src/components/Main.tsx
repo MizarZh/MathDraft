@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import {
   DndContext,
   closestCorners,
@@ -16,7 +16,6 @@ import type { MathfieldElement, MoveOutEvent } from 'mathlive'
 
 import { randomStringGenerator } from '../utils'
 import { EquationData } from '../types'
-import { notebookListItemName } from '../config'
 
 import { Equation, EquationOverlay } from './Equation/Equation'
 import EditableField from './EditableField/EditableField'
@@ -44,14 +43,24 @@ function Main() {
     notebookName = params.notebookName
   }
 
+  const { notebookList, notebookListSaveHandler, notebookListDeleteHander } =
+    useContext(NotebookListContext)
+
+  // 404
+  const navigate = useNavigate()
+  useEffect(() => {
+    console.log(notebookName, notebookList, notebookList.indexOf(notebookName))
+    if (notebookList.indexOf(notebookName) === -1) {
+      navigate('/404')
+    }
+  })
+
   const equationData = localStorage.getItem(notebookName)
   const [eqs, setEqs] = useState(
     JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
   )
 
   const elRefs = useRef([] as Array<MathfieldElement | null>)
-
-  const { notebookList, saveHandler } = useContext(NotebookListContext)
 
   // force update
   useEffect(() => {
@@ -195,11 +204,12 @@ function Main() {
         value={notebookName}
         idx={notebookList.indexOf(notebookName)}
         elemType="text"
-        onSave={saveHandler}
+        onSave={notebookListSaveHandler}
+        onDelete={notebookListDeleteHander}
+        moveable={false}
       ></EditableField>
       <div className="eq-section">
         <DndContext
-          // sensors={sensers}
           collisionDetection={closestCorners}
           onDragEnd={dragEndHandler}
           onDragStart={dragStartHandler}

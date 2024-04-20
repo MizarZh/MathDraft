@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { randomStringGenerator } from '../../utils'
 
 import './EditableField.css'
 
@@ -8,16 +7,20 @@ interface EditableFieldProps {
   value: string
   idx: number
   onSave: (newVal: string, idx: number) => void
+  onDelete: (idx: number) => void
   elemType: 'text' | 'link'
   to: string
+  moveable: boolean
 }
 
 const EditableField = ({
   value,
   idx,
   onSave,
+  onDelete,
   elemType,
   to,
+  moveable,
 }: EditableFieldProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editedValue, setEditedValue] = useState(value)
@@ -26,7 +29,7 @@ const EditableField = ({
   useEffect(() => {
     setEditedValue(value)
   }, [value])
-  
+
   const handleEdit = () => {
     setIsEditing(true)
   }
@@ -38,6 +41,10 @@ const EditableField = ({
   const handleSave = () => {
     onSave(editedValue, idx)
     setIsEditing(false)
+  }
+
+  const handleDelete = () => {
+    onDelete(idx)
   }
 
   const handleEnter = (ev: React.KeyboardEvent) => {
@@ -54,6 +61,9 @@ const EditableField = ({
 
   return (
     <div className="editable-field">
+      {moveable ? (
+        <span className="control material-symbols-outlined">menu</span>
+      ) : null}
       {isEditing ? (
         <input
           type="text"
@@ -66,6 +76,12 @@ const EditableField = ({
       ) : (
         displayElem(elemType)
       )}
+      <span
+        className="control material-symbols-outlined"
+        onClick={handleDelete}
+      >
+        delete
+      </span>
       <span
         onClick={handleEdit}
         className="edit-icon material-symbols-outlined"
