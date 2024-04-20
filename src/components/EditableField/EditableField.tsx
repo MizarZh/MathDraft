@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, useRouter } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { randomStringGenerator } from '../../utils'
 
 import './EditableField.css'
@@ -8,7 +8,7 @@ interface EditableFieldProps {
   value: string
   idx: number
   onSave: (newVal: string, idx: number) => void
-  elemType: 'div' | 'Link'
+  elemType: 'text' | 'link'
   to: string
 }
 
@@ -22,6 +22,11 @@ const EditableField = ({
   const [isEditing, setIsEditing] = useState(false)
   const [editedValue, setEditedValue] = useState(value)
 
+  // force update
+  useEffect(() => {
+    setEditedValue(value)
+  }, [value])
+  
   const handleEdit = () => {
     setIsEditing(true)
   }
@@ -39,16 +44,16 @@ const EditableField = ({
     if (ev.key === 'Enter') handleSave()
   }
 
-  const displayElem = (elemType: 'div' | 'Link') => {
-    if (elemType == 'div') {
-      return <div>{value}</div>
-    } else if (elemType === 'Link') {
+  const displayElem = (elemType: 'text' | 'link') => {
+    if (elemType == 'text') {
+      return <h1>{value}</h1>
+    } else if (elemType === 'link') {
       return <Link to={to}>{value}</Link>
     }
   }
 
   return (
-    <div>
+    <div className="editable-field">
       {isEditing ? (
         <input
           type="text"

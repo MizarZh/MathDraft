@@ -1,37 +1,25 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import { notebookListItemName } from '../../config'
+import { randomStringGenerator } from '../../utils'
 
 import EditableField from '../EditableField/EditableField'
-import { randomStringGenerator } from '../../utils'
+import { NotebookListContext } from '../../App'
 
 import './NotebookBoard.css'
 
 function NotebookBoard() {
-  const notebookListData = localStorage.getItem(notebookListItemName)
-  const [notebookList, setNotebookList] = useState(
-    JSON.parse(notebookListData === null ? '[]' : notebookListData) as string[]
-  )
-  const setSaveNotbookList = (value: string[]) => {
-    setNotebookList(value)
-    localStorage.setItem(notebookListItemName, JSON.stringify(value))
-  }
+  const { notebookList, setSaveNotbookList, saveHandler } =
+    useContext(NotebookListContext)
 
-  const saveHandler = (newVal: string, idx: number) => {
-    const newList = [...notebookList]
-    newList[idx] = newVal
-    setSaveNotbookList(newList)
-
-    const equationData = localStorage.getItem(notebookList[idx])
-    localStorage.removeItem(notebookList[idx])
-    if (equationData !== null) {
-      localStorage.setItem(newVal, equationData)
-    } else {
-      localStorage.setItem(newVal, '[]')
-    }
-  }
+  // useEffect(() => {
+  //   setSaveNotbookList(notebookList)
+  // }, [notebookList, setSaveNotbookList])
 
   const addHandler = () => {
-    setSaveNotbookList([...notebookList, `Notebook-${randomStringGenerator(6)}`])
+    setSaveNotbookList([
+      ...notebookList,
+      `Notebook-${randomStringGenerator(6)}`,
+    ])
   }
 
   return (
@@ -43,7 +31,7 @@ function NotebookBoard() {
             value={val}
             idx={idx}
             onSave={saveHandler}
-            elemType={'Link'}
+            elemType={'link'}
             to={`/notebook/${val}/`}
           ></EditableField>
         )

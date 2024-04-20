@@ -1,10 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import './Main.css'
-
-import { randomStringGenerator } from '../utils'
-import { EquationData } from '../types'
-
 import {
   DndContext,
   closestCorners,
@@ -17,10 +12,17 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable'
+import type { MathfieldElement, MoveOutEvent } from 'mathlive'
+
+import { randomStringGenerator } from '../utils'
+import { EquationData } from '../types'
+import { notebookListItemName } from '../config'
 
 import { Equation, EquationOverlay } from './Equation/Equation'
+import EditableField from './EditableField/EditableField'
+import { NotebookListContext } from '../App'
 
-import type { MathfieldElement, MoveOutEvent } from 'mathlive'
+import './Main.css'
 
 declare global {
   namespace JSX {
@@ -41,18 +43,22 @@ function Main() {
   } else {
     notebookName = params.notebookName
   }
+
   const equationData = localStorage.getItem(notebookName)
   const [eqs, setEqs] = useState(
     JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
   )
+
+  const elRefs = useRef([] as Array<MathfieldElement | null>)
+
+  const { notebookList, saveHandler } = useContext(NotebookListContext)
+
   // force update
   useEffect(() => {
     setEqs(
       JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
     )
   }, [equationData])
-
-  const elRefs = useRef([] as Array<MathfieldElement | null>)
 
   function keyHandler(ev: React.KeyboardEvent, idx: number) {
     // const target = ev.target as MathfieldElement
@@ -183,37 +189,46 @@ function Main() {
   }
 
   return (
-    <div className="eq-section">
-      <DndContext
-        // sensors={sensers}
-        collisionDetection={closestCorners}
-        onDragEnd={dragEndHandler}
-        onDragStart={dragStartHandler}
-      >
-        <SortableContext items={eqs} strategy={verticalListSortingStrategy}>
-          {eqs.map((val, idx) => (
-            <Equation
-              key={val.id}
-              idx={idx}
-              eqData={val}
-              elRefs={elRefs}
-              func={{
-                updateInputValue,
-                deleteEq,
-                moveUp,
-                moveDown,
-                keyHandler,
-                moveOutHandler,
-              }}
-            ></Equation>
-          ))}
-        </SortableContext>
-        <DragOverlay>
-          {draggingIdx ? <EquationOverlay eqData={eqs[draggingIdx]} /> : null}
-        </DragOverlay>
-      </DndContext>
-      <div className="add-eq" onMouseUp={addElement}>
-        +
+    <div className="main-section">
+      <EditableField
+        to=""
+        value={notebookName}
+        idx={notebookList.indexOf(notebookName)}
+        elemType="text"
+        onSave={saveHandler}
+      ></EditableField>
+      <div className="eq-section">
+        <DndContext
+          // sensors={sensers}
+          collisionDetection={closestCorners}
+          onDragEnd={dragEndHandler}
+          onDragStart={dragStartHandler}
+        >
+          <SortableContext items={eqs} strategy={verticalListSortingStrategy}>
+            {eqs.map((val, idx) => (
+              <Equation
+                key={val.id}
+                idx={idx}
+                eqData={val}
+                elRefs={elRefs}
+                func={{
+                  updateInputValue,
+                  deleteEq,
+                  moveUp,
+                  moveDown,
+                  keyHandler,
+                  moveOutHandler,
+                }}
+              ></Equation>
+            ))}
+          </SortableContext>
+          <DragOverlay>
+            {draggingIdx ? <EquationOverlay eqData={eqs[draggingIdx]} /> : null}
+          </DragOverlay>
+        </DndContext>
+        <div className="add-eq" onMouseUp={addElement}>
+          +
+        </div>
       </div>
     </div>
   )

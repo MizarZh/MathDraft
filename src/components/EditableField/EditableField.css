@@ -2,3 +2,8 @@
   cursor: pointer;
   user-select: none;
 }
+
+.editable-field {
+  display: flex;
+  justify-content: space-between;
+}
