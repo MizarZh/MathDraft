@@ -5,9 +5,9 @@ math-field {
   width: 100%;
 }
 
-/* math-field::part(menu-toggle) {
+math-field::part(menu-toggle) {
   display: none;
-} */
+}
 
 math-field::part(virtual-keyboard-toggle) {
   display: none;

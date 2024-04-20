@@ -1,0 +1,16 @@
+.notebook-root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-notebook {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6em;
+  border: 1px black dashed;
+  height: 2em;
+  cursor: pointer;
+}

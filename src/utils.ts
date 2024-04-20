@@ -1,6 +1,6 @@
-export function randomStringGenerator(): string {
-  const len = 6,
-    charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+export function randomStringGenerator(len: number): string {
+  const charSet =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
     charSetLen = charSet.length
   let randomString = ''
   for (let i = 0; i < len; i++) {

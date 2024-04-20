@@ -17,3 +17,7 @@ Based on [mathlive.js](https://github.com/arnog/mathlive).
 Wait for fixes in mathlive.js:
 - [ ] Jump to the end of the math field while inputing
 - [x] Multiple menus
+
+1. Sidebar
+2. Change name
+3. popup window

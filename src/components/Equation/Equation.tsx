@@ -8,7 +8,7 @@ import 'mathlive'
 import type { MathfieldElement, MoveOutEvent } from 'mathlive'
 import 'mathlive/fonts.css'
 
-import { EquationData } from './types'
+import { EquationData } from '../../types'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'

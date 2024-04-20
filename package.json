@@ -17,7 +17,9 @@
     "material-symbols": "^0.17.2",
     "mathlive": "0.98.6",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
