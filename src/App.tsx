@@ -2,6 +2,7 @@ import React, { useState, createContext } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 
 import { notebookListItemName } from './config'
+import { matchLocationOfNotebook } from './utils'
 
 import Main from './components/Main'
 import NotebookBoard from './components/NotebookBoard/NotebookBoard'
@@ -48,7 +49,7 @@ export function App() {
         localStorage.setItem(newVal, '[]')
       }
       setSaveNotbookList(newList)
-      const match = location.pathname.match(/\/notebook\/([^/]+)\/?/)
+      const match = matchLocationOfNotebook(location)
       if (match !== null && match[1] === oldVal) navigate(`/notebook/${newVal}`)
     } else {
       alert('Name already exists!')
@@ -60,38 +61,49 @@ export function App() {
     const oldVal = notebookList[idx]
     localStorage.removeItem(oldVal)
     setSaveNotbookList(newList)
-    const match = location.pathname.match(/\/notebook\/([^/]+)\/?/)
+    const match = matchLocationOfNotebook(location)
     if (match !== null && match[1] === oldVal) navigate('/')
   }
 
+  const [leftSidebarToggle, setLeftSidebarToggle] = useState(true)
+
+  const toggleMenu = () => {
+    leftSidebarToggle ? setLeftSidebarToggle(false) : setLeftSidebarToggle(true)
+  }
+
   return (
-    <div id="base">
-      <NotebookListContext.Provider
-        value={
-          {
-            notebookList,
-            setNotebookList,
-            setSaveNotbookList,
-            notebookListSaveHandler,
-            notebookListDeleteHander,
-          } as NotebookListContextType
-        }
+    <NotebookListContext.Provider
+      value={
+        {
+          notebookList,
+          setNotebookList,
+          setSaveNotbookList,
+          notebookListSaveHandler,
+          notebookListDeleteHander,
+        } as NotebookListContextType
+      }
+    >
+      <span
+        className="left-sidebar-toggler material-symbols-outlined"
+        onClick={toggleMenu}
       >
-        <div className="left-sidebar">
-          <NotebookBoard></NotebookBoard>
-        </div>
-        <div className="main">
-          <Routes>
-            <Route path="/" element={<Welcome></Welcome>}></Route>
-            {/* <Route path="/notebook/" element={<Main></Main>}></Route> */}
-            <Route
-              path="/notebook/:notebookName"
-              element={<Main></Main>}
-            ></Route>
-            <Route path="404" element={<ErrorPage></ErrorPage>}></Route>
-          </Routes>
-        </div>
-      </NotebookListContext.Provider>
-    </div>
+        menu
+      </span>
+      <div
+        className={leftSidebarToggle ? 'left-sidebar' : 'left-sidebar collapse'}
+      >
+        <NotebookBoard></NotebookBoard>
+      </div>
+      {/* <div id="base"> */}
+      <div className={leftSidebarToggle ? 'main' : 'main collapse'}>
+        <Routes>
+          <Route path="/" element={<Welcome></Welcome>}></Route>
+          {/* <Route path="/notebook/" element={<Main></Main>}></Route> */}
+          <Route path="/notebook/:notebookName" element={<Main></Main>}></Route>
+          <Route path="404" element={<ErrorPage></ErrorPage>}></Route>
+        </Routes>
+      </div>
+      {/* </div> */}
+    </NotebookListContext.Provider>
   )
 }

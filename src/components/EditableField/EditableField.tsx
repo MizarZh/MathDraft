@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Link, useLocation } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+
+import { matchLocationOfNotebook } from '../../utils'
 
 import './EditableField.css'
 
@@ -71,17 +72,30 @@ export const EditableField = ({
 
   const displayElem = (elemType: 'text' | 'link') => {
     if (elemType == 'text') {
-      return <h1>{value}</h1>
+      return <h1 className="content text">{value}</h1>
     } else if (elemType === 'link') {
-      return <Link to={to}>{value}</Link>
+      return (
+        <Link className="content link" to={to}>
+          {value}
+        </Link>
+      )
     }
+  }
+  const location = useLocation()
+
+  function getFieldClass() {
+    let klass = ` editable-field ${elemType} `
+    const match = matchLocationOfNotebook(location)
+    if (match !== null && match[1] === value && elemType === 'link')
+      klass += 'active'
+    return klass
   }
 
   return (
-    <div className="editable-field" ref={setNodeRef} style={dragStyle}>
+    <div className={getFieldClass()} ref={setNodeRef} style={dragStyle}>
       {moveable ? (
         <span
-          className="control material-symbols-outlined"
+          className="icon material-symbols-outlined"
           {...attributes}
           {...listeners}
         >
@@ -91,6 +105,7 @@ export const EditableField = ({
       {isEditing ? (
         <input
           type="text"
+          className='content-intput'
           value={editedValue}
           onChange={handleChange}
           onBlur={handleSave}
@@ -100,16 +115,10 @@ export const EditableField = ({
       ) : (
         displayElem(elemType)
       )}
-      <span
-        className="control material-symbols-outlined"
-        onClick={handleDelete}
-      >
+      <span className="icon material-symbols-outlined" onClick={handleDelete}>
         delete
       </span>
-      <span
-        onClick={handleEdit}
-        className="edit-icon material-symbols-outlined"
-      >
+      <span onClick={handleEdit} className="icon material-symbols-outlined">
         edit
       </span>
     </div>
@@ -125,17 +134,21 @@ export const EditableFieldOverlay = ({
 }) => {
   const displayElem = (elemType: 'text' | 'link') => {
     if (elemType == 'text') {
-      return <h1>{value}</h1>
+      return <h1 className="content">{value}</h1>
     } else if (elemType === 'link') {
-      return <Link to="">{value}</Link>
+      return (
+        <Link className="content" to="">
+          {value}
+        </Link>
+      )
     }
   }
   return (
-    <div className="editable-field">
-      <span className="control material-symbols-outlined">menu</span>
+    <div className="editable-field overlay">
+      <span className="icon material-symbols-outlined">menu</span>
       {displayElem(elemType)}
-      <span className="control material-symbols-outlined">delete</span>
-      <span className="edit-icon material-symbols-outlined">edit</span>
+      <span className="icon material-symbols-outlined">delete</span>
+      <span className="icon material-symbols-outlined">edit</span>
     </div>
   )
 }

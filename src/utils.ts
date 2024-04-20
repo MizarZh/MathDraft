@@ -1,3 +1,5 @@
+import { Location } from 'react-router-dom'
+
 export function randomStringGenerator(len: number): string {
   const charSet =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
@@ -8,4 +10,8 @@ export function randomStringGenerator(len: number): string {
     randomString += charSet.substring(randomPoz, randomPoz + 1)
   }
   return randomString
+}
+
+export function matchLocationOfNotebook(location: Location) {
+  return location.pathname.match(/\/notebook\/([^/]+)\/?/)
 }

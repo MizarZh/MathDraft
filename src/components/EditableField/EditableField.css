@@ -1,4 +1,4 @@
-.edit-icon {
+.icon {
   cursor: pointer;
   user-select: none;
 }
@@ -6,4 +6,31 @@
 .editable-field {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  transition: 250ms;
+}
+
+.editable-field.active {
+  background-color: #00a6ff;
+  transition: 250ms;
+}
+
+.editable-field:hover:not(.active, .text, .overlay, .title) {
+  background-color: #a8ebff;
+  transition: 250ms;
+}
+
+.content {
+  color: #000;
+  text-decoration: none;
+  width: 200px;
+  margin: 5px;
+  font-size: 1.6rem;
+  overflow-wrap: anywhere;
+}
+
+.content-intput {
+  font-size: 1.6rem;
+  width: 200px;
 }

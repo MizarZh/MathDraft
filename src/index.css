@@ -3,10 +3,12 @@
   margin: 0;
 }
 
-/* math-field::part(virtual-keyboard-toggle) {
-  display: none;
-} */
-
-/* math-field::part(container) {
-  min-height: 3em;
-} */
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  z-index: -100;
+  top: 0;
+  left: 0;
+}

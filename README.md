@@ -7,11 +7,11 @@ Based on [mathlive.js](https://github.com/arnog/mathlive).
 - [x] Mathlive.js support
 - [x] Column arragement
 - [x] Dragable elements
+- [x] Notebooks
 - [ ] Better mathlive intput (Shortcuts for better input/matrix operation) <!-- change ui of mathlive -->
 - [ ] Better control <!-- multiline selection, column selection -->
 - [ ] Settings
 - [ ] Copy board
-- [ ] File system
 - [ ] Canvas
 
 Wait for fixes in mathlive.js:
@@ -19,5 +19,4 @@ Wait for fixes in mathlive.js:
 - [x] Multiple menus
 
 1. Sidebar
-2. Change name
-3. popup window
+2. popup window
