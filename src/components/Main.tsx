@@ -18,7 +18,7 @@ import { randomStringGenerator } from '../utils'
 import { EquationData } from '../types'
 
 import { Equation, EquationOverlay } from './Equation/Equation'
-import EditableField from './EditableField/EditableField'
+import { EditableField } from './EditableField/EditableField'
 import { NotebookListContext } from '../App'
 
 import './Main.css'

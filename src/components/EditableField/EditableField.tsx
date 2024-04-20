@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
 import './EditableField.css'
 
 interface EditableFieldProps {
@@ -13,7 +16,7 @@ interface EditableFieldProps {
   moveable: boolean
 }
 
-const EditableField = ({
+export const EditableField = ({
   value,
   idx,
   onSave,
@@ -22,6 +25,21 @@ const EditableField = ({
   to,
   moveable,
 }: EditableFieldProps) => {
+  const {
+    isDragging,
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: value })
+
+  const dragStyle = {
+    opacity: isDragging ? 0.2 : 1,
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
   const [isEditing, setIsEditing] = useState(false)
   const [editedValue, setEditedValue] = useState(value)
 
@@ -60,9 +78,15 @@ const EditableField = ({
   }
 
   return (
-    <div className="editable-field">
+    <div className="editable-field" ref={setNodeRef} style={dragStyle}>
       {moveable ? (
-        <span className="control material-symbols-outlined">menu</span>
+        <span
+          className="control material-symbols-outlined"
+          {...attributes}
+          {...listeners}
+        >
+          menu
+        </span>
       ) : null}
       {isEditing ? (
         <input
@@ -92,4 +116,26 @@ const EditableField = ({
   )
 }
 
-export default EditableField
+export const EditableFieldOverlay = ({
+  value,
+  elemType,
+}: {
+  value: string
+  elemType: 'text' | 'link'
+}) => {
+  const displayElem = (elemType: 'text' | 'link') => {
+    if (elemType == 'text') {
+      return <h1>{value}</h1>
+    } else if (elemType === 'link') {
+      return <Link to="">{value}</Link>
+    }
+  }
+  return (
+    <div className="editable-field">
+      <span className="control material-symbols-outlined">menu</span>
+      {displayElem(elemType)}
+      <span className="control material-symbols-outlined">delete</span>
+      <span className="edit-icon material-symbols-outlined">edit</span>
+    </div>
+  )
+}
