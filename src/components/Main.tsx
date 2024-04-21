@@ -54,6 +54,7 @@ function Main() {
     }
   })
 
+  // equation
   const equationData = localStorage.getItem(notebookName)
   const [eqs, setEqs] = useState(
     JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
@@ -67,6 +68,19 @@ function Main() {
       JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
     )
   }, [equationData])
+
+  // // show index
+  // const [showTextareaList, setShowTextareaList] = useState(
+  //   Array(eqs.length).fill(false)
+  // )
+
+  // const setShowTextarea = (idx: number, val: boolean) => {
+  //   const temp = showTextareaList
+  //   temp[idx] = val
+  //   setShowTextareaList(temp)
+  // }
+
+  // const [showTextarea, setShowTextarea] = useState(false)
 
   function keyHandler(ev: React.KeyboardEvent, idx: number) {
     // const target = ev.target as MathfieldElement
@@ -165,6 +179,7 @@ function Main() {
     }
   }
 
+  // drag
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null)
 
   function dragEndHandler(ev: DragEndEvent) {
@@ -220,6 +235,7 @@ function Main() {
                 idx={idx}
                 eqData={val}
                 elRefs={elRefs}
+                // showTextarea={showTextareaList[idx]}
                 func={{
                   updateInputValue,
                   deleteEq,
@@ -227,12 +243,15 @@ function Main() {
                   moveDown,
                   keyHandler,
                   moveOutHandler,
+                  // setShowTextarea,
                 }}
               ></Equation>
             ))}
           </SortableContext>
           <DragOverlay>
-            {draggingIdx ? <EquationOverlay eqData={eqs[draggingIdx]} /> : null}
+            {draggingIdx ? (
+              <EquationOverlay eqData={eqs[draggingIdx]} showTextarea={false} />
+            ) : null}
           </DragOverlay>
         </DndContext>
         <div className="add-eq" onMouseUp={addElement}>

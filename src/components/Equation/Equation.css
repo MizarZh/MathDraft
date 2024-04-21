@@ -5,6 +5,16 @@ math-field {
   width: 100%;
 }
 
+.input-area {
+  width: 100%;
+}
+
+.math-textarea {
+  font-size: 24px;
+  width: 100%;
+  resize: none;
+}
+
 math-field::part(menu-toggle) {
   display: none;
 }
@@ -24,7 +34,7 @@ math-field::part(container) {
 .equation {
   display: flex;
   flex-direction: row;
-  margin: 1px
+  margin: 1px;
 }
 
 .controller {
