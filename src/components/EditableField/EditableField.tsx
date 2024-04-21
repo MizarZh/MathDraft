@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -12,7 +12,7 @@ interface EditableFieldProps {
   idx: number
   onSave: (newVal: string, idx: number) => void
   onDelete: (idx: number) => void
-  elemType: 'text' | 'link'
+  elemType: 'text' | 'link' | 'title'
   to: string
   moveable: boolean
 }
@@ -78,15 +78,17 @@ export const EditableField = ({
     target.style.height = target.scrollHeight + 'px'
   }
 
-  const displayElem = (elemType: 'text' | 'link') => {
+  const displayElem = (elemType: 'text' | 'link' | 'title') => {
     if (elemType == 'text') {
-      return <h1 className="content text">{value}</h1>
+      return <div className="content">{value}</div>
     } else if (elemType === 'link') {
       return (
-        <Link className="content link" to={to}>
+        <Link className="content" to={to}>
           {value}
         </Link>
       )
+    } else if (elemType === 'title') {
+      return <div className="content title">{value}</div>
     }
   }
   const location = useLocation()
@@ -141,9 +143,9 @@ export const EditableFieldOverlay = ({
   elemType,
 }: {
   value: string
-  elemType: 'text' | 'link'
+  elemType: 'text' | 'link' | 'title'
 }) => {
-  const displayElem = (elemType: 'text' | 'link') => {
+  const displayElem = (elemType: 'text' | 'link' | 'title') => {
     if (elemType == 'text') {
       return <h1 className="content">{value}</h1>
     } else if (elemType === 'link') {

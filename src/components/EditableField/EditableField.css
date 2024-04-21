@@ -37,3 +37,14 @@
   resize: none;
   height: auto;
 }
+
+.editable-field.title {
+  width: 100%;
+  height: 4rem;
+}
+
+.editable-field.title .content,
+.editable-field.title .content-intput {
+  text-align: center;
+  width: 100%;
+}

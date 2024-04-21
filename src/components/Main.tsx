@@ -202,7 +202,7 @@ function Main() {
         to=""
         value={notebookName}
         idx={notebookList.indexOf(notebookName)}
-        elemType="text"
+        elemType="title"
         onSave={notebookListSaveHandler}
         onDelete={notebookListDeleteHander}
         moveable={false}
