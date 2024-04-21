@@ -7,8 +7,9 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  position: absolute;
-  z-index: -100;
   top: 0;
   left: 0;
+
+  --left-sidebar-width: 300px;
+  --right-sidebar-width: 300px;
 }

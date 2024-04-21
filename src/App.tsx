@@ -6,6 +6,7 @@ import { matchLocationOfNotebook } from './utils'
 
 import Main from './components/Main'
 import NotebookBoard from './components/NotebookBoard/NotebookBoard'
+import CopyBoard from './components/CopyBoard/CopyBoard'
 import Welcome from './components/Welcome'
 import ErrorPage from './components/ErrorPage'
 
@@ -66,44 +67,72 @@ export function App() {
   }
 
   const [leftSidebarToggle, setLeftSidebarToggle] = useState(true)
+  const [rightSidebarToggle, setRightSidebarToggle] = useState(false)
 
-  const toggleMenu = () => {
+  const toggleLeftSidebar = () => {
     leftSidebarToggle ? setLeftSidebarToggle(false) : setLeftSidebarToggle(true)
+    // setLeftSidebarToggle(toggle)
+  }
+
+  const toggleRightSidebar = () => {
+    rightSidebarToggle
+      ? setRightSidebarToggle(false)
+      : setRightSidebarToggle(true)
   }
 
   return (
-    <NotebookListContext.Provider
-      value={
-        {
-          notebookList,
-          setNotebookList,
-          setSaveNotbookList,
-          notebookListSaveHandler,
-          notebookListDeleteHander,
-        } as NotebookListContextType
-      }
-    >
-      <span
-        className="left-sidebar-toggler material-symbols-outlined"
-        onClick={toggleMenu}
+    <div id="base">
+      <NotebookListContext.Provider
+        value={
+          {
+            notebookList,
+            setNotebookList,
+            setSaveNotbookList,
+            notebookListSaveHandler,
+            notebookListDeleteHander,
+          } as NotebookListContextType
+        }
       >
-        menu
-      </span>
-      <div
-        className={leftSidebarToggle ? 'left-sidebar' : 'left-sidebar collapse'}
-      >
-        <NotebookBoard></NotebookBoard>
-      </div>
-      {/* <div id="base"> */}
-      <div className={leftSidebarToggle ? 'main' : 'main collapse'}>
-        <Routes>
-          <Route path="/" element={<Welcome></Welcome>}></Route>
-          {/* <Route path="/notebook/" element={<Main></Main>}></Route> */}
-          <Route path="/notebook/:notebookName" element={<Main></Main>}></Route>
-          <Route path="404" element={<ErrorPage></ErrorPage>}></Route>
-        </Routes>
-      </div>
-      {/* </div> */}
-    </NotebookListContext.Provider>
+        <span
+          className="left-sidebar-toggler material-symbols-outlined"
+          onClick={toggleLeftSidebar}
+        >
+          menu
+        </span>
+        <div
+          className={
+            leftSidebarToggle ? 'left-sidebar' : 'left-sidebar collapse'
+          }
+        >
+          {/* {leftSidebarToggle ? <NotebookBoard></NotebookBoard> : null} */}
+          <NotebookBoard></NotebookBoard>
+        </div>
+
+        <div className="main">
+          <Routes>
+            <Route path="/" element={<Welcome></Welcome>}></Route>
+            {/* <Route path="/notebook/" element={<Main></Main>}></Route> */}
+            <Route
+              path="/notebook/:notebookName"
+              element={<Main></Main>}
+            ></Route>
+            <Route path="404" element={<ErrorPage></ErrorPage>}></Route>
+          </Routes>
+        </div>
+        <span
+          className="right-sidebar-toggler material-symbols-outlined"
+          onClick={toggleRightSidebar}
+        >
+          menu
+        </span>
+        <div
+          className={
+            rightSidebarToggle ? 'right-sidebar' : 'right-sidebar collapse'
+          }
+        >
+          <CopyBoard></CopyBoard>
+        </div>
+      </NotebookListContext.Provider>
+    </div>
   )
 }

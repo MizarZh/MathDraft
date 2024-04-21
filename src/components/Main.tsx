@@ -49,7 +49,6 @@ function Main() {
   // 404
   const navigate = useNavigate()
   useEffect(() => {
-    console.log(notebookName, notebookList, notebookList.indexOf(notebookName))
     if (notebookList.indexOf(notebookName) === -1) {
       navigate('/404')
     }

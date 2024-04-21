@@ -1,7 +1,8 @@
 .notebook-root {
-  width: 100%;
+  width: var(--left-sidebar-width);
   display: flex;
   flex-direction: column;
+  padding: 50px 10px;
 }
 
 .add-notebook {

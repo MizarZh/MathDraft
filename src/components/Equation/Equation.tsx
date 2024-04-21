@@ -13,7 +13,7 @@ import { EquationData } from '../../types'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-interface Props {
+interface EquationProps {
   idx: number
   eqData: EquationData
   elRefs: React.MutableRefObject<(MathfieldElement | null)[]>
@@ -31,7 +31,7 @@ interface Props {
   }
 }
 
-function Equation({ idx, eqData, elRefs, func }: Props) {
+function Equation({ idx, eqData, elRefs, func }: EquationProps) {
   const {
     updateInputValue,
     deleteEq,

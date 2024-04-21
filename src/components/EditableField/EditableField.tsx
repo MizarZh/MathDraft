@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -53,7 +53,9 @@ export const EditableField = ({
     setIsEditing(true)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setEditedValue(e.target.value)
   }
 
@@ -68,6 +70,12 @@ export const EditableField = ({
 
   const handleEnter = (ev: React.KeyboardEvent) => {
     if (ev.key === 'Enter') handleSave()
+  }
+
+  const autoResize = (ev: any) => {
+    const target = ev.target
+    target.style.height = ''
+    target.style.height = target.scrollHeight + 'px'
   }
 
   const displayElem = (elemType: 'text' | 'link') => {
@@ -103,15 +111,18 @@ export const EditableField = ({
         </span>
       ) : null}
       {isEditing ? (
-        <input
-          type="text"
-          className='content-intput'
+        <textarea
+          className="content-intput"
           value={editedValue}
           onChange={handleChange}
           onBlur={handleSave}
           onKeyDown={handleEnter}
           autoFocus
-        />
+          wrap="hard"
+          spellCheck={false}
+          onFocus={autoResize}
+          onInput={autoResize}
+        ></textarea>
       ) : (
         displayElem(elemType)
       )}

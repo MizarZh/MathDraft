@@ -9,9 +9,9 @@ math-field::part(menu-toggle) {
   display: none;
 }
 
-math-field::part(virtual-keyboard-toggle) {
+/* math-field::part(virtual-keyboard-toggle) {
   display: none;
-}
+} */
 
 math-field::part(content) {
   isolation: isolate;
@@ -24,6 +24,7 @@ math-field::part(container) {
 .equation {
   display: flex;
   flex-direction: row;
+  margin: 1px
 }
 
 .controller {

@@ -1,8 +1,6 @@
 #base {
-  /* --left-side-bar-width: 300px;
-  width: calc(100% - var(--left-side-bar-width));
+  width: 100%;
   display: flex;
-  justify-content: center; */
 }
 
 .left-sidebar-toggler {
@@ -15,33 +13,48 @@
 }
 
 .left-sidebar {
-  z-index: -10;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 50px 10px;
-  height: 100%;
-  transition: 250ms;
-  width: var(--left-side-bar-width);
+  height: 100vh;
+  flex-shrink: 0;
+  width: calc(
+    var(--left-sidebar-width) + 20px
+  ); /* 20px: padding in NotebookBoard.css */
   background-color: #eee;
+  transition: 250ms;
+  overflow-x: hidden;
 }
 
 .left-sidebar.collapse {
-  left: -100%;
+  width: 0;
+  transition: 250ms;
+}
+
+.right-sidebar-toggler {
+  z-index: 0;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.right-sidebar {
+  flex-shrink: 0;
+  height: 100vh;
+  width: var(--right-sidebar-width);
+  background-color: #eee;
+  transition: 250ms;
+  overflow-x: hidden;
+}
+
+.right-sidebar.collapse {
+  width: 0;
   transition: 250ms;
 }
 
 .main {
-  --left-side-bar-width: 300px;
-  width: calc(100% - var(--left-side-bar-width) - 40px);
-  margin-left: calc(var(--left-side-bar-width) + 40px);
-  max-width: 1280px;
-  transition: 250ms;
-}
-
-.main.collapse {
   width: 100%;
-  max-width: 1280px;
-  margin-left: 40px;
-  transition: 250ms;
+  margin: 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

@@ -9,6 +9,7 @@ Based on [mathlive.js](https://github.com/arnog/mathlive).
 - [x] Dragable elements
 - [x] Notebooks
 - [ ] Better mathlive intput (Shortcuts for better input/matrix operation) <!-- change ui of mathlive -->
+- [ ] Multiple media
 - [ ] Better control <!-- multiline selection, column selection -->
 - [ ] Settings
 - [ ] Copy board
@@ -18,5 +19,4 @@ Wait for fixes in mathlive.js:
 - [ ] Jump to the end of the math field while inputing
 - [x] Multiple menus
 
-1. Sidebar
-2. popup window
+1. popup window
