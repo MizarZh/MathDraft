@@ -27,6 +27,7 @@ math-field::part(menu-toggle) {
 
 math-field::part(content) {
   isolation: isolate;
+  overflow-x: scroll;
 }
 
 math-field::part(container) {

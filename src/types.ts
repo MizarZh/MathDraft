@@ -5,3 +5,8 @@ export interface EquationData {
     collapse: boolean
   }
 }
+
+export interface CopyEquationData {
+  id: string
+  eq: string
+}

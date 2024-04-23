@@ -11,6 +11,7 @@ import { EquationData } from '../../types'
 import { layout } from '../Keyboard'
 
 import './Equation.css'
+
 interface EquationProps {
   idx: number
   eqData: EquationData

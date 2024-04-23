@@ -247,7 +247,6 @@ function Main() {
                 idx={idx}
                 eqData={val}
                 elRefs={elRefs}
-                // showTextarea={showTextareaList[idx]}
                 func={{
                   updateInputValue,
                   deleteEq,
@@ -256,7 +255,6 @@ function Main() {
                   keyHandler,
                   moveOutHandler,
                   toggleCollapse,
-                  // setShowTextarea,
                 }}
               ></Equation>
             ))}
