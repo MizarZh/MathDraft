@@ -27,6 +27,7 @@ interface EquationProps {
       el: MathfieldElement,
       idx: number
     ) => void
+    toggleCollapse: (idx: number) => void
     // setShowTextarea: (idx: number, val: boolean) => void
   }
 }
@@ -39,6 +40,7 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
     moveDown,
     keyHandler,
     moveOutHandler,
+    toggleCollapse,
     // setShowTextarea,
   } = func
 
@@ -51,14 +53,14 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
     transition,
   } = useSortable({ id: eqData.id })
 
-  const [showTextareaState, setShowTextareaState] = useState(false)
-  // useEffect(() => {
-  //   setShowTextareaState(showTextarea)
-  // }, [showTextarea])
-  const toggleShowTextareaState = () => {
-    showTextareaState ? setShowTextareaState(false) : setShowTextareaState(true)
-    // setShowTextarea(idx, showTextareaState)
-  }
+  // const [showTextareaState, setShowTextareaState] = useState(false)
+  // // useEffect(() => {
+  // //   setShowTextareaState(showTextarea)
+  // // }, [showTextarea])
+  // const toggleShowTextareaState = () => {
+  //   showTextareaState ? setShowTextareaState(false) : setShowTextareaState(true)
+  //   // setShowTextarea(idx, showTextareaState)
+  // }
 
   const dragStyle = {
     opacity: isDragging ? 0.2 : 1,
@@ -85,12 +87,12 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
         <span
           className="control material-symbols-outlined"
           onMouseUp={() => {
-            toggleShowTextareaState()
+            toggleCollapse(idx)
           }}
         >
-          {showTextareaState
-            ? 'keyboard_double_arrow_up'
-            : 'keyboard_double_arrow_down'}
+          {eqData.config.collapse
+            ? 'keyboard_double_arrow_down'
+            : 'keyboard_double_arrow_up'}
         </span>
         {/* <span
           className="control material-symbols-outlined"
@@ -117,7 +119,6 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
           onInput={(ev) => {
             updateInputValue(idx, (ev.target as MathfieldElement).value)
           }}
-          data-inputAreaState={showTextareaState}
           // onContextMenuCapture={(ev) => console.log(ev.target)}
           ref={(el) => {
             if (el !== null) {
@@ -134,7 +135,7 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
         >
           {eqData.eq}
         </math-field>
-        {showTextareaState ? (
+        {eqData.config.collapse ? null : (
           <textarea
             className="math-textarea"
             defaultValue={eqData.eq}
@@ -145,7 +146,7 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
             onFocus={(ev) => autoResize(ev)}
             spellCheck={false}
           ></textarea>
-        ) : null}
+        )}
       </div>
     </div>
   )
@@ -153,7 +154,6 @@ function Equation({ idx, eqData, elRefs, func }: EquationProps) {
 
 function EquationOverlay({
   eqData,
-  showTextarea,
 }: {
   eqData: EquationData
   showTextarea: boolean
@@ -163,9 +163,9 @@ function EquationOverlay({
       <div className="controller">
         <span className="control material-symbols-outlined">menu</span>
         <span className="control material-symbols-outlined">
-          {showTextarea
-            ? 'keyboard_double_arrow_up'
-            : 'keyboard_double_arrow_down'}
+          {eqData.config.collapse
+            ? 'keyboard_double_arrow_down'
+            : 'keyboard_double_arrow_up'}
         </span>
         {/* <span className="control material-symbols-outlined">arrow_upward</span>
         <span className="control material-symbols-outlined">
@@ -175,13 +175,13 @@ function EquationOverlay({
       </div>
       <div className="input-area">
         <math-field>{eqData.eq}</math-field>
-        {showTextarea ? (
+        {eqData.config.collapse ? null : (
           <textarea
             className="math-textarea"
             value={eqData.eq}
             readOnly
           ></textarea>
-        ) : null}
+        )}
       </div>
     </div>
   )

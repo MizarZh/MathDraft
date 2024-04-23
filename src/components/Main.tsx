@@ -16,6 +16,7 @@ import type { MathfieldElement, MoveOutEvent } from 'mathlive'
 
 import { randomStringGenerator } from '../utils'
 import { EquationData } from '../types'
+import { defaultEquationConfig } from '../config'
 
 import { Equation, EquationOverlay } from './Equation/Equation'
 import { EditableField } from './EditableField/EditableField'
@@ -148,8 +149,18 @@ function Main() {
     }
   }
 
+  const toggleCollapse = (idx: number) => {
+    const x = [...eqs]
+    const collapse = eqs[idx].config.collapse
+    x[idx].config.collapse = collapse ? false : true
+    setSaveEqs(x)
+  }
+
   const addElement = () => {
-    setSaveEqs([...eqs, { id: randomStringGenerator(8), eq: '' }])
+    setSaveEqs([
+      ...eqs,
+      { id: randomStringGenerator(8), eq: '', config: { collapse: true } },
+    ])
   }
 
   const moveOutHandler = (
@@ -243,6 +254,7 @@ function Main() {
                   moveDown,
                   keyHandler,
                   moveOutHandler,
+                  toggleCollapse,
                   // setShowTextarea,
                 }}
               ></Equation>
