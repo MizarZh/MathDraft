@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react'
+import React, { useState, createContext, useEffect } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 
 import { notebookListItemName } from './config'
@@ -23,10 +23,12 @@ interface NotebookListContextType {
 export const NotebookListContext = createContext({} as NotebookListContextType)
 
 export function App() {
-  const notebookListData = localStorage.getItem(notebookListItemName)
-  const [notebookList, setNotebookList] = useState(
-    JSON.parse(notebookListData === null ? '[]' : notebookListData) as string[]
-  )
+  const [notebookList, setNotebookList] = useState(() => {
+    const notebookListData = localStorage.getItem(notebookListItemName)
+    return JSON.parse(
+      notebookListData === null ? '[]' : notebookListData
+    ) as string[]
+  })
   const navigate = useNavigate()
   const location = useLocation()
 

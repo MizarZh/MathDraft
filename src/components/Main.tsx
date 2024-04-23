@@ -56,19 +56,16 @@ function Main() {
   })
 
   // equation
-  const equationData = localStorage.getItem(notebookName)
-  const [eqs, setEqs] = useState(
-    JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
-  )
-
+  const [eqs, setEqs] = useState([] as EquationData[])
   const elRefs = useRef([] as Array<MathfieldElement | null>)
 
   // force update
   useEffect(() => {
+    const equationData = localStorage.getItem(notebookName)
     setEqs(
       JSON.parse(equationData === null ? '[]' : equationData) as EquationData[]
     )
-  }, [equationData])
+  }, [notebookName])
 
   // // show index
   // const [showTextareaList, setShowTextareaList] = useState(
@@ -159,7 +156,11 @@ function Main() {
   const addElement = () => {
     setSaveEqs([
       ...eqs,
-      { id: randomStringGenerator(8), eq: '', config: { collapse: true } },
+      {
+        id: randomStringGenerator(8),
+        eq: '',
+        config: Object.assign({}, defaultEquationConfig),
+      },
     ])
   }
 

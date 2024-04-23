@@ -7,6 +7,7 @@
   border: 1px black dashed;
   height: 2em;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .eq-section {

@@ -21,6 +21,7 @@
   background-color: #eee;
   transition: 250ms;
   overflow-x: hidden;
+  box-shadow: 1px 1px 6px #ccc;
 }
 
 .left-sidebar.collapse {
@@ -44,6 +45,7 @@
   background-color: #eee;
   transition: 250ms;
   overflow-x: hidden;
+  box-shadow: -1px 1px 6px #ccc;
 }
 
 .right-sidebar.collapse {
