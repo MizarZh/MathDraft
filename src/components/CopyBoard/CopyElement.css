@@ -1,3 +1,7 @@
 math-field::part(virtual-keyboard-toggle) {
   display: none;
 }
+
+math-field {
+  overflow-x: scroll;
+}

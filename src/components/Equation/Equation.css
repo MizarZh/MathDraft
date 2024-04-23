@@ -4,6 +4,7 @@ math-field {
   padding: 8px;
   width: 100%;
   box-sizing: border-box;
+  overflow-wrap: normal;
 }
 
 .input-area {
@@ -27,7 +28,6 @@ math-field::part(menu-toggle) {
 
 math-field::part(content) {
   isolation: isolate;
-  overflow-x: scroll;
 }
 
 math-field::part(container) {

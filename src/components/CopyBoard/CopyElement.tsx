@@ -57,9 +57,7 @@ function CopyElement({ copyEq, idx, func }: CopyElementProps) {
           delete
         </span>
       </div>
-      <div className="input-area">
-        <math-field>{copyEq.eq}</math-field>
-      </div>
+      <math-field>{copyEq.eq}</math-field>
     </div>
   )
 }
@@ -72,9 +70,8 @@ function CopyElementOverlay({ copyEq }: { copyEq: CopyEquationData }) {
         <span className="control material-symbols-outlined">content_copy</span>
         <span className="control material-symbols-outlined">delete</span>
       </div>
-      <div className="input-area">
-        <math-field>{copyEq.eq}</math-field>
-      </div>
+
+      <math-field>{copyEq.eq}</math-field>
     </div>
   )
 }

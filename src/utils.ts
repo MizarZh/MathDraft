@@ -12,6 +12,8 @@ export function randomStringGenerator(len: number): string {
   return randomString
 }
 
-export function matchLocationOfNotebook(location: Location) {
-  return location.pathname.match(/\/notebook\/([^/]+)\/?/)
+export function matchLocationOfNotebook(location: Location, oldVal: string) {
+  const match = location.pathname.match(/\/notebook\/([^/]+)\/?/)
+  if (match !== null && decodeURI(match[1]) === oldVal) return true
+  else return false
 }

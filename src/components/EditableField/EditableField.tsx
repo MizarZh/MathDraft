@@ -95,8 +95,7 @@ export const EditableField = ({
 
   function getFieldClass() {
     let klass = ` editable-field ${elemType} `
-    const match = matchLocationOfNotebook(location)
-    if (match !== null && match[1] === value && elemType === 'link')
+    if (matchLocationOfNotebook(location, value) && elemType === 'link')
       klass += 'active'
     return klass
   }
@@ -115,7 +114,7 @@ export const EditableField = ({
       {isEditing ? (
         <textarea
           className="content-intput"
-          value={editedValue}
+          defaultValue={editedValue}
           onChange={handleChange}
           onBlur={handleSave}
           onKeyDown={handleEnter}

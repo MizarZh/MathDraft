@@ -1,5 +1,8 @@
-import React, { useState, createContext, useEffect } from 'react'
+import React, { useState, createContext } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+
+import Drawer from '@mui/material/Drawer'
+import Snackbar from '@mui/material/Snackbar'
 
 import { notebookListItemName, copyBoardItemName } from './config'
 import { matchLocationOfNotebook } from './utils'
@@ -46,8 +49,11 @@ export function App() {
 
   const notebookListSaveHandler = (newVal: string, idx: number) => {
     const oldVal = notebookList[idx]
+    if (newVal === notebookListItemName || oldVal === copyBoardItemName) {
+      setAlert('Group name should not be the same as list config name!')
+    }
     // same name or not exists in the list
-    if (newVal === oldVal || notebookList.indexOf(newVal) === -1) {
+    else if (newVal === oldVal || notebookList.indexOf(newVal) === -1) {
       const newList = [...notebookList]
       newList[idx] = newVal
 
@@ -59,10 +65,10 @@ export function App() {
         localStorage.setItem(newVal, '[]')
       }
       setSaveNotbookList(newList)
-      const match = matchLocationOfNotebook(location)
-      if (match !== null && match[1] === oldVal) navigate(`/notebook/${newVal}`)
+      if (matchLocationOfNotebook(location, oldVal))
+        navigate(`/notebook/${newVal}`)
     } else {
-      alert('Name already exists!')
+      setAlert('Name already exists!')
     }
   }
 
@@ -71,8 +77,7 @@ export function App() {
     const oldVal = notebookList[idx]
     localStorage.removeItem(oldVal)
     setSaveNotbookList(newList)
-    const match = matchLocationOfNotebook(location)
-    if (match !== null && match[1] === oldVal) navigate('/')
+    if (matchLocationOfNotebook(location, oldVal)) navigate('/')
   }
 
   // Copy equation
@@ -104,6 +109,19 @@ export function App() {
       : setRightSidebarToggle(true)
   }
 
+  const drawerWidth = 300,
+    copyDrawerWidth = 500
+
+  const getMainStyle = () => {
+    return {
+      marginLeft: leftSidebarToggle ? 30 : -drawerWidth,
+      marginRight: rightSidebarToggle ? 30 : -copyDrawerWidth,
+      transition: '250ms',
+    }
+  }
+
+  const [alert, setAlert] = useState('')
+
   return (
     <div id="base">
       <NotebookListContext.Provider
@@ -131,16 +149,26 @@ export function App() {
           >
             menu
           </span>
-          <div
-            className={
-              leftSidebarToggle ? 'left-sidebar' : 'left-sidebar collapse'
-            }
+          <Drawer
+            open={leftSidebarToggle}
+            variant="persistent"
+            anchor="left"
+            PaperProps={{
+              sx: {
+                width: drawerWidth,
+              },
+            }}
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              zIndex: -10,
+              boxSizing: 'border-box',
+            }}
+            transitionDuration={250}
           >
-            {/* {leftSidebarToggle ? <NotebookBoard></NotebookBoard> : null} */}
             <NotebookBoard></NotebookBoard>
-          </div>
-
-          <div className="main">
+          </Drawer>
+          <div className="main" style={getMainStyle()}>
             <Routes>
               <Route path="/" element={<Welcome></Welcome>}></Route>
               {/* <Route path="/notebook/" element={<Main></Main>}></Route> */}
@@ -157,15 +185,34 @@ export function App() {
           >
             menu
           </span>
-          <div
-            className={
-              rightSidebarToggle ? 'right-sidebar' : 'right-sidebar collapse'
-            }
+          <Drawer
+            open={rightSidebarToggle}
+            variant="persistent"
+            anchor="right"
+            PaperProps={{
+              sx: {
+                width: copyDrawerWidth,
+              },
+            }}
+            sx={{
+              width: copyDrawerWidth,
+              flexShrink: 0,
+              zIndex: -10,
+              boxSizing: 'border-box',
+            }}
+            transitionDuration={250}
           >
             <CopyBoard></CopyBoard>
-          </div>
+          </Drawer>
         </CopyEqsContext.Provider>
       </NotebookListContext.Provider>
+      <Snackbar
+        open={alert !== ''}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={6000}
+        message={alert}
+        onClose={() => setAlert('')}
+      ></Snackbar>
     </div>
   )
 }

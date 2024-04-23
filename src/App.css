@@ -1,11 +1,11 @@
 #base {
-  width: 100%;
+  width: 100vw;
   display: flex;
-  
+  z-index: 20;
 }
 
 .left-sidebar-toggler {
-  z-index: 0;
+  z-index: 10;
   position: fixed;
   top: 10px;
   left: 10px;
@@ -13,12 +13,12 @@
   user-select: none;
 }
 
-.left-sidebar {
+/* .left-sidebar {
   height: 100vh;
   flex-shrink: 0;
   width: calc(
     var(--left-sidebar-width) + 20px
-  ); /* 20px: padding in NotebookBoard.css */
+  );
   background-color: #eee;
   transition: 250ms;
   overflow-x: hidden;
@@ -28,10 +28,10 @@
 .left-sidebar.collapse {
   width: 0;
   transition: 250ms;
-}
+} */
 
 .right-sidebar-toggler {
-  z-index: 0;
+  z-index: 10;
   position: fixed;
   top: 10px;
   right: 10px;
@@ -39,7 +39,7 @@
   user-select: none;
 }
 
-.right-sidebar {
+/* .right-sidebar {
   flex-shrink: 0;
   height: 100vh;
   width: var(--right-sidebar-width);
@@ -52,12 +52,14 @@
 .right-sidebar.collapse {
   width: 0;
   transition: 250ms;
-}
+} */
 
 .main {
+  /* flex-grow: 0; */
   width: 100%;
-  margin: 0 40px;
+  /* margin: 0 40px; */
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 0;
 }
